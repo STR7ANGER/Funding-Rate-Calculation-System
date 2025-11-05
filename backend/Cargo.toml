@@ -39,3 +39,10 @@ uuid = { version = "1.11", features = ["v4", "serde"] }
 rust_decimal = "1.37"
 rust_decimal_macros = "1.37"
 
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "rate_aggregator_bench"
+harness = false
+

@@ -5,12 +5,15 @@ This repository is scaffolded from `ass.md` with a runnable backend, SQL migrati
 ## Quick Start
 
 1. Copy env
+
    - Create `.env` based on `.env.example`.
 
 2. Start infrastructure
+
    - `docker-compose up -d`
 
 3. Run backend locally
+
    - `cargo run --release --bin funding-rate-backend`
    - Health check: `curl http://localhost:8080/health` → `ok`
 
@@ -19,6 +22,7 @@ This repository is scaffolded from `ass.md` with a runnable backend, SQL migrati
    - Or run locally via `sqlx migrate run` with `DATABASE_URL`
 
 ## Structure
+
 - Workspace `Cargo.toml`
 - `backend/` Axum service with `/health`
 - `migrations/` SQL 001-005
@@ -27,5 +31,9 @@ This repository is scaffolded from `ass.md` with a runnable backend, SQL migrati
 - `docker-compose.yml`, backend `Dockerfile`
 - `Makefile`
 
+## Start
 
+run test: cargo test -p funding-rate-backend --all-features -- --nocapture
+performance benchmark: cargo bench -p funding-rate-backend
 
+start: docker-compose up -d postgres redis && cargo run --release --bin funding-rate-backend
