@@ -37,3 +37,5 @@ run test: cargo test -p funding-rate-backend --all-features -- --nocapture
 performance benchmark: cargo bench -p funding-rate-backend
 
 start: docker-compose up -d postgres redis && cargo run --release --bin funding-rate-backend
+
+websocket stream:  websocat -t 'ws://localhost:8080/ws?symbol=<SYMBOL>-PERP'

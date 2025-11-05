@@ -2,7 +2,7 @@
 
 ## Connection
 
-Connect to: `ws://localhost:8081/ws`
+Connect to: `ws://localhost:8080/ws`
 
 ## Real-time Funding Rate Updates
 
