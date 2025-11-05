@@ -1,0 +1,30 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+    
+    - name: Build backend
+      run: cargo build --release --bin funding-rate-backend
+    
+    - name: Build Docker image
+      run: docker build -t funding-rate-backend:latest -f backend/Dockerfile .
+    
+    # Add deployment steps here (e.g., push to registry, deploy to server)
+

@@ -1,0 +1,38 @@
+[server]
+host = "127.0.0.1"
+port = 8080
+ws_port = 8081
+
+[database]
+max_connections = 5
+min_connections = 1
+acquire_timeout_sec = 10
+
+[redis]
+max_connections = 5
+cache_ttl_sec = 30
+
+[calculation]
+interval_sec = 1
+payment_interval_sec = 3600
+max_symbols = 10
+target_calculation_time_ms = 200
+parallel_tasks = 5
+
+[funding]
+interest_rate_daily = 0.0001
+rate_min = -0.0005
+rate_max = 0.0005
+
+[oracle]
+timeout_ms = 1000
+max_staleness_sec = 60
+retry_attempts = 2
+retry_delay_ms = 50
+
+[monitoring]
+enable_metrics = false
+enable_alerts = false
+metrics_port = 9090
+log_level = "debug"
+

@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:17.2-alpine
+    container_name: funding-postgres-prod
+    environment:
+      POSTGRES_DB: funding_rates
+      POSTGRES_USER: funding_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U funding_user -d funding_rates"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - funding-network
+    restart: always
+
+  redis:
+    image: redis:7.4.1-alpine
+    container_name: funding-redis-prod
+    command: redis-server --appendonly yes --maxmemory 1gb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - funding-network
+    restart: always
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: funding-backend-prod
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://funding_user:${POSTGRES_PASSWORD}@postgres:5432/funding_rates
+      - REDIS_URL=redis://redis:6379
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+      - "9090:9090"
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    networks:
+      - funding-network
+    restart: always
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  funding-network:
+    driver: bridge
+
